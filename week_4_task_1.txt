@@ -1,0 +1,80 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<iterator>
+using namespace std;
+struct Control{
+        int id;
+        string type;
+        string state;
+
+        Control(int id , string type , string state): id(id),type(type),state(state){}
+
+        
+    };
+
+void printControl(const Control& ctrl) {
+            cout << "id: " << ctrl.id << " type: " << ctrl.type << " state: " << ctrl.state << endl;
+        }
+
+int main(){
+    
+
+    vector<Control> Controls;
+    Controls.push_back(Control(1 ,"button" ,"invisible"));
+    Controls.push_back(Control(2 ,"button" ,"visible"));
+    Controls.push_back(Control(3 ,"button" ,"disable"));
+    Controls.push_back(Control(4 ,"slider" ,"invisible"));
+    Controls.push_back(Control(5 ,"slider" ,"visible"));
+    Controls.push_back(Control(6 ,"slider" ,"disable"));
+    Controls.push_back(Control(7 ,"button" ,"invisible"));
+    Controls.push_back(Control(8 ,"button" ,"visible"));
+    Controls.push_back(Control(9 ,"slider" ,"disable"));
+    Controls.push_back(Control(10 ,"slider" ,"disable"));
+    
+
+
+    for(auto control : Controls){
+        cout<<"id :"<<control.id<<" "<<"type :"<<control.type<<" "<<"state :"<<control.state<<endl;
+    }
+
+    int ID;
+    cout<<"enter id to check :"<<endl;
+    cin>>ID;
+    auto id = find_if(Controls.begin() , Controls.end() , [ID](const Control& citr){return citr.id == ID;});
+    if(id != Controls.end()){
+        cout<<ID<<"found in the Controls"<<endl;
+    }
+    else{
+        cout<<ID<<"not found in Controls\n";
+    }
+    auto it= find_if(Controls.begin() , Controls.end() , [](const Control& citr){return citr.state == "visible";});
+    if(it != Controls.end()){
+        printControl(*it);
+    }
+
+    auto same_state = adjacent_find(Controls.begin() , Controls.end() , [](const Control& citr1 , const Control& citr2){return citr1.state == citr2.state;});
+    if(same_state != Controls.end()){
+        cout<<"these are the adjacent controls found withsame state\n";
+        printControl(*same_state);
+        if(same_state +1 != Controls.end()){
+            printControl(*(same_state + 1));
+        }
+    }
+    else{
+        cout<<"no adjacent control found with same state\n";
+    }
+
+    int visible_count = count_if(Controls.begin() , Controls.end() , [](const Control& countitr){return countitr.state == "visible";});
+    cout<<"count of visible controls is : "<<visible_count<<endl;
+
+    int slider_count = count_if(Controls.begin() , Controls.end() , [](const Control& countitr){return countitr.state == "disable" && countitr.type == "slider";});
+    cout<<"count of disabled slider controls is : "<<slider_count<<endl;
+
+
+    return 0;
+
+   
+
+
+}

@@ -1,0 +1,48 @@
+#include<iostream>
+#include<list>
+#include<algorithm>
+#include<iterator>
+
+
+using namespace std;
+
+struct Control{
+    int id ;
+    string control;
+
+    Control(int id , string control):id(id),control(control){}
+
+};
+
+int main(){
+
+    list<Control> Controls1{{1 , "control1"} , {3 , "control3"} , {2 , "control2"}};
+    list<Control> Controls2{{6 , "control6"} , {5 , "control5"} , {4,"control4"}};
+
+    Controls1.sort([](const Control& a , const Control& b){return a.id<b.id;});
+    Controls2.sort([](const Control& a , const Control& b){return a.id<b.id;});
+
+    cout<<"sorted controls1"<<endl;
+    for(auto control: Controls1){
+        cout<<"ID: "<<control.id<<" CONTROL: "<<control.control<<endl;
+    }
+    cout<<"sorted controls2"<<endl;
+    for(auto control: Controls2){
+        cout<<"ID: "<<control.id<<" CONTROL: "<<control.control<<endl;
+    }
+
+    int searchid;
+    cin>>searchid;
+
+    auto id = lower_bound(Controls1.begin() , Controls1.end() , searchid);
+
+    if(id != Controls1.end()){
+        cout<<"id found"<<endl;
+    }
+    else{
+        cout<<"id not found"<<endl;
+    }
+
+
+    return 0;
+}

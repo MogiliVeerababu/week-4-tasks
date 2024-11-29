@@ -1,0 +1,68 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <random>
+
+using namespace std; // Allows us to omit 'std::' prefix
+
+// Function to generate random state for testing
+string generateRandomState() {
+    static random_device rd;
+    static mt19937 gen(rd());
+    static uniform_int_distribution<> distrib(0, 2);
+
+    switch (distrib(gen)) {
+        case 0: return "visible";
+        case 1: return "invisible";
+        case 2: return "disabled";
+    }
+    return "disabled";  // Default case
+}
+
+int main() {
+    vector<string> controlList = {"visible", "invisible", "disabled", "visible", "disabled"};
+
+    // 1. Create a backup of the control list
+    vector<string> backupList(controlList.size());
+    copy(controlList.begin(), controlList.end(), backupList.begin());
+
+    // 2. Set all states to "disabled"
+    fill(controlList.begin(), controlList.end(), "disabled");
+
+    // 3. Generate random states for testing using generateRandomState
+    generate(controlList.begin(), controlList.end(), generateRandomState);
+
+    // 4. Apply transformations (set all states to "invisible")
+    transform(controlList.begin(), controlList.end(), controlList.begin(),
+              [](const string& state) { return "invisible"; });
+
+    // 5. Replace "disabled" with "enabled"
+    replace(controlList.begin(), controlList.end(), string("disabled"), string("enabled"));
+
+    // 6. Filter out invisible controls
+    controlList.erase(remove_if(controlList.begin(), controlList.end(),
+                                [](const string& state) { return state == "invisible"; }),
+                      controlList.end());
+
+    // 7. Reverse the control order
+    reverse(controlList.begin(), controlList.end());
+
+    // 8. Partition the controls (visible vs non-visible)
+    auto it = partition(controlList.begin(), controlList.end(),
+                        [](const string& state) { return state == "visible"; });
+
+    // Display the final control list
+    cout << "Visible controls: ";
+    for (auto iter = controlList.begin(); iter != it; ++iter) {
+        cout << *iter << " ";
+    }
+    cout << endl;
+
+    cout << "Non-visible controls: ";
+    for (auto iter = it; iter != controlList.end(); ++iter) {
+        cout << *iter << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
